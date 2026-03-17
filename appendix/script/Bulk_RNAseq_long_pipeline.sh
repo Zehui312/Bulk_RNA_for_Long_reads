@@ -1,9 +1,9 @@
 #!/bin/bash
 # Default values
-# sample_name="Serum"
+# sample_name="test"
 # pod5_path="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk_RNA_pipeline/pod5_test"
 # appendix_path="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk-RNA-seq-for-Nanopore-long-reads/appendix"
-# output_dir="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk_RNA_pipeline"
+# out_put_path="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk_RNA_pipeline"
 # reference_genome="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk-RNA-seq-for-Nanopore-long-reads/appendix/ref/sample_1.fna"
 # basecalling_module="${appendix_path}/model_files/dna_r10.4.1_e8.2_400bps_sup@v5.0.0"
 # trim_approach="best-read-segment"
@@ -70,9 +70,9 @@ trim_cutadapt_script=${appendix_path}/script/trim_cutadapt.sh
 trim_polyAT_script=${appendix_path}/script/polyAT_split_keep_longer.py 
 mapping_script=${appendix_path}/script/mapping_ont_bulk.sh
 jobs_check_shell=${appendix_path}/script/Jobs_check.sh
+
+
 out_put_path=${output_dir}/${sample_name}
-
-
 if [ ! -d "$out_put_path" ]; then
     mkdir -p "$out_put_path"
 fi
@@ -97,99 +97,99 @@ echo "Minimum run length: $min_run_length"
 
 echo "Threads: $threads"
 echo "Memory per job: ${memory}GB"
-# #=================================================================
-# #+++++++++++++++++++++++Step 1 basecalling +++++++++++++++++++++++
-# #=================================================================
-# mkdir ${out_put_path}/1_1_dorado
-# cd ${out_put_path}/1_1_dorado
+#=================================================================
+#+++++++++++++++++++++++Step 1 basecalling +++++++++++++++++++++++
+#=================================================================
+mkdir ${out_put_path}/1_1_dorado
+cd ${out_put_path}/1_1_dorado
 
-# # Step 1 generate dorado basecalling script 
-# ls ${pod5_path} | grep "pod5" | cut -f 1 -d "." | awk -v basecalling_module=${basecalling_module} -v pod5_path=${pod5_path} '{print "dorado basecaller "basecalling_module" "pod5_path"/"$1".pod5 --no-trim --emit-fastq > "$1".fastq"}' > basecalling.sh
+# Step 1 generate dorado basecalling script 
+ls ${pod5_path} | grep "pod5" | cut -f 1 -d "." | awk -v basecalling_module=${basecalling_module} -v pod5_path=${pod5_path} '{print "dorado basecaller "basecalling_module" "pod5_path"/"$1".pod5 --no-trim --emit-fastq > "$1".fastq"}' > basecalling.sh
 
-# # Step 2 submit dorado basecalling jobs
-# count=1
-# while read runcode; do
-#     bsub -q gpu -gpu "num=1/host" -R a100_80g -R "rusage[mem=16GB]" -P ${sample_name}_basecalling_${count} -J ${sample_name}_basecalling_${count} -eo ${sample_name}_basecalling_${count}.err -oo ${sample_name}_basecalling_${count}.out $runcode
-#     count=$((count+1))
-# done < basecalling.sh
+# Step 2 submit dorado basecalling jobs
+count=1
+while read runcode; do
+    bsub -q gpu -gpu "num=1/host" -R a100_80g -R "rusage[mem=16GB]" -P ${sample_name}_basecalling_${count} -J ${sample_name}_basecalling_${count} -eo ${sample_name}_basecalling_${count}.err -oo ${sample_name}_basecalling_${count}.out $runcode
+    count=$((count+1))
+done < basecalling.sh
 
-# sh ${jobs_check_shell} -f basecalling.sh -l ${sample_name}_basecalling
-
-# # #=================================================================
-# # #+++++++++++++++++++++++Step 1_2 QC and stat++++++++++++++++++++++
-# # #=================================================================
-# mkdir -p ${out_put_path}/1_2_QC_stat
-# cd ${out_put_path}/1_2_QC_stat
-# # Step 1 merge dorado fastq files
-# cat ${out_put_path}/1_1_dorado/*fastq | gzip > ${sample_name}_1_basecalling.fastq.gz 
-
-# # Step 2 chopper trim and filter fastq files based on quality
-# chopper --trim-approach ${trim_approach} --cutoff ${trim_cutoff} -i ${sample_name}_1_basecalling.fastq.gz | gzip > ${sample_name}_2_chopper.fastq.gz
-
-# # Step 3 filter fastq files based on length and quality
-# zcat ${sample_name}_2_chopper.fastq.gz | NanoFilt -l ${min_length} --maxlength ${max_length} -q ${QC_quality} | gzip > ${sample_name}_3_filtered.fastq.gz
-
-# mkdir log_files
-
-# # Step 4 NanoPlot and Seqkit stat
-# bsub -P ${sample_name}_NanoPlot -J ${sample_name}_NanoPlot -n ${threads} -R "rusage[mem=${memory}GB]" -eo log_files/${sample_name}_NanoPlot.err -oo log_files/${sample_name}_NanoPlot.out "
-# NanoPlot --fastq ${sample_name}_3_filtered.fastq.gz -o ${sample_name}_NanoPlot "
-
-# bsub -P ${sample_name}_Stats -J ${sample_name}_Stats -n ${threads} -R "rusage[mem=${memory}GB]" -eo log_files/${sample_name}_Stats.err -oo log_files/${sample_name}_Stats.out "
-# seqkit stat *.fastq.gz > ${sample_name}_QC_stat.txt"
-
-
-# # #=================================================================
-# # #+++++++++++++++++++++++Step 2-1  Demultiplexing +++++++++++++++++
-# # #=================================================================
-# mkdir -p ${out_put_path}/2-1_Demultiplexing
-# cd ${out_put_path}/2-1_Demultiplexing
-# mkdir -p ${out_put_path}/2-1_Demultiplexing/input_fastq
-# ln -s ${out_put_path}/1_2_QC_stat/${sample_name}_3_filtered.fastq.gz ${out_put_path}/2-1_Demultiplexing/input_fastq/
-
-# dorado demux -t 8 --output-dir ${out_put_path}/2-1_Demultiplexing --emit-fastq --kit-name ${kit_name} ${out_put_path}/2-1_Demultiplexing/input_fastq
-
-# seqkit stat *.fastq > Demux_stat.txt
+sh ${jobs_check_shell} -f basecalling.sh -l ${sample_name}_basecalling
 
 # #=================================================================
-# #+++++++++++++++++++++++Step 2-2 rename ++++++++++++++++++++++++++
+# #+++++++++++++++++++++++Step 1_2 QC and stat++++++++++++++++++++++
 # #=================================================================
-# mkdir -p ${out_put_path}/2-2_rename
-# cd ${out_put_path}/2-2_rename
+mkdir -p ${out_put_path}/1_2_QC_stat
+cd ${out_put_path}/1_2_QC_stat
+# Step 1 merge dorado fastq files
+cat ${out_put_path}/1_1_dorado/*fastq | gzip > ${sample_name}_1_basecalling.fastq.gz 
 
-# tail -n +2 "$demux_table" | while IFS=, read -r barcode sample ; do
-#     sample=${sample//$'\r'/}
-#     file=$(find ${out_put_path}/2-1_Demultiplexing -name "*${barcode}*.fastq")
-#     if [ -f "$file" ]; then
-#         ln -s "$file" "${sample}.fastq"
-#     fi
-# done
+# Step 2 chopper trim and filter fastq files based on quality
+chopper --trim-approach ${trim_approach} --cutoff ${trim_cutoff} -i ${sample_name}_1_basecalling.fastq.gz | gzip > ${sample_name}_2_chopper.fastq.gz
 
-# seqkit stat *.fastq > demux_stat.txt
+# Step 3 filter fastq files based on length and quality
+zcat ${sample_name}_2_chopper.fastq.gz | NanoFilt -l ${min_length} --maxlength ${max_length} -q ${QC_quality} | gzip > ${sample_name}_3_filtered.fastq.gz
 
-# # #=================================================================
-# # #+++++++++++++++++++++++Step 3  Trim adapter +++++++++++++++++++++
-# # #=================================================================
-# mkdir -p ${out_put_path}/3_Trim_adapter
-# cd ${out_put_path}/3_Trim_adapter
+mkdir log_files
 
-# ln -s ${out_put_path}/2-2_rename/*.fastq ./
+# Step 4 NanoPlot and Seqkit stat
+bsub -P ${sample_name}_NanoPlot -J ${sample_name}_NanoPlot -n ${threads} -R "rusage[mem=${memory}GB]" -eo log_files/${sample_name}_NanoPlot.err -oo log_files/${sample_name}_NanoPlot.out "
+NanoPlot --fastq ${sample_name}_3_filtered.fastq.gz -o ${sample_name}_NanoPlot "
 
+bsub -P ${sample_name}_Stats -J ${sample_name}_Stats -n ${threads} -R "rusage[mem=${memory}GB]" -eo log_files/${sample_name}_Stats.err -oo log_files/${sample_name}_Stats.out "
+seqkit stat *.fastq.gz > ${sample_name}_QC_stat.txt"
 
 
-# cp ${trim_polyAT_script} .
+# #=================================================================
+# #+++++++++++++++++++++++Step 2-1  Demultiplexing +++++++++++++++++
+# #=================================================================
+mkdir -p ${out_put_path}/2-1_Demultiplexing
+cd ${out_put_path}/2-1_Demultiplexing
+mkdir -p ${out_put_path}/2-1_Demultiplexing/input_fastq
+ln -s ${out_put_path}/1_2_QC_stat/${sample_name}_3_filtered.fastq.gz ${out_put_path}/2-1_Demultiplexing/input_fastq/
 
-# ls *.fastq | while read fqfile; do
-#     echo "sh ${trim_cutadapt_script} -i ${fqfile} -s ${fqfile%%.*} -g ${adapter_5} -a ${adapter_3} -m ${min_length} -r 2 -l ${min_run_length}"
-# done > run_trim_adapt_polyAT.sh
+dorado demux -t 8 --output-dir ${out_put_path}/2-1_Demultiplexing --emit-fastq --kit-name ${kit_name} ${out_put_path}/2-1_Demultiplexing/input_fastq
 
-# count=1
-# while read runcode; do
-#     bsub -P trim_${count} -J trim_${count} -n 2 -R "rusage[mem=8GB]" -eo trim_${count}.err -oo trim_${count}.out $runcode
-#     count=$((count + 1))
-# done < run_trim_adapt_polyAT.sh
+seqkit stat *.fastq > Demux_stat.txt
 
-# sh ${jobs_check_shell} -f run_trim_adapt_polyAT.sh -l trim_
+#=================================================================
+#+++++++++++++++++++++++Step 2-2 rename ++++++++++++++++++++++++++
+#=================================================================
+mkdir -p ${out_put_path}/2-2_rename
+cd ${out_put_path}/2-2_rename
+
+tail -n +2 "$demux_table" | while IFS=, read -r barcode sample ; do
+    sample=${sample//$'\r'/}
+    file=$(find ${out_put_path}/2-1_Demultiplexing -name "*${barcode}*.fastq")
+    if [ -f "$file" ]; then
+        ln -s "$file" "${sample}.fastq"
+    fi
+done
+
+seqkit stat *.fastq > demux_stat.txt
+
+# #=================================================================
+# #+++++++++++++++++++++++Step 3  Trim adapter +++++++++++++++++++++
+# #=================================================================
+mkdir -p ${out_put_path}/3_Trim_adapter
+cd ${out_put_path}/3_Trim_adapter
+
+ln -s ${out_put_path}/2-2_rename/*.fastq ./
+
+
+
+cp ${trim_polyAT_script} .
+
+ls *.fastq | while read fqfile; do
+    echo "sh ${trim_cutadapt_script} -i ${fqfile} -s ${fqfile%%.*} -g ${adapter_5} -a ${adapter_3} -m ${min_length} -r 2 -l ${min_run_length}"
+done > run_trim_adapt_polyAT.sh
+
+count=1
+while read runcode; do
+    bsub -P trim_${count} -J trim_${count} -n 2 -R "rusage[mem=8GB]" -eo trim_${count}.err -oo trim_${count}.out $runcode
+    count=$((count + 1))
+done < run_trim_adapt_polyAT.sh
+
+sh ${jobs_check_shell} -f run_trim_adapt_polyAT.sh -l trim_
 
 bsub -P stat -J stat -n 2 -R "rusage[mem=8GB]" -eo stat.err -oo stat.out "
 seqkit stat *cleaned.fastq.gz *.fastq > Trim_adapter_stat.txt"

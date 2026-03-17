@@ -17,9 +17,8 @@ demux_table=$(echo $line | cut -d ',' -f 13)
 adapter_5=$(echo $line | cut -d ',' -f 14)
 adapter_3=$(echo $line | cut -d ',' -f 15)
 min_run_length=$(echo $line | cut -d ',' -f 16)
-rounds=$(echo $line | cut -d ',' -f 17)
-thread_num=$(echo $line | cut -d ',' -f 18)
-memory=$(echo $line | cut -d ',' -f 19)
+thread_num=$(echo $line | cut -d ',' -f 17)
+memory=$(echo $line | cut -d ',' -f 18)
   echo "sh ./appendix/script/Bulk_RNAseq_long_pipeline.sh --sample-name $sample_name --pod5-path $pod5_path --appendix-path $appendix_path --output-dir $output_dir --reference $reference_genome --basecalling-module $basecalling_module --trim-approach $trim_approach --trim-cutoff $trim_cutoff --qc-quality $QC_quality --min-length $min_length --max-length $max_length --kit-name $kit_name --demux-table $demux_table --adapter-5 $adapter_5 --adapter-3 $adapter_3 --min-run-length $min_run_length --threads $thread_num --memory $memory" 
 done > ./appendix/script/run_pipeline.sh
 
