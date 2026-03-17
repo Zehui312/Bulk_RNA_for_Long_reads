@@ -17,6 +17,8 @@ The output BAM files can be directly used for downstream analyses.
 
 ## 1. Workflow
 <img src="/img/workflow.png" width="500">
+
+
 ## 2. Create Environment for Bulk_RNA_for_Long_reads
 
 All required software dependencies are listed in the YAML file. You can create the environment and install all tools with:
@@ -32,24 +34,26 @@ conda activate ont_env
 ## 3. Fill meta_data.csv
 You just need to enter your specific parameters into **meta_data.csv**, and then run the pipeline.
 
-- Sample_name : Sample name
-- pod5_path : Path to POD5 files (raw Nanopore signal data)
-- appendix_path : Path to additional input files or supplementary data
-- output_path : Path to output directory
-- reference_genome : Path to reference genome file (FASTA)
-- basecalling_module : Basecalling software/module (e.g., dorado, guppy)
-- trim_approach : Trimming method (e.g., adapter trimming strategy)
-- trim_cutoff : Quality or score cutoff for trimming
-- QC_quality : Minimum read quality threshold
-- min_length : Minimum read length cutoff
-- max_length : Maximum read length cutoff
-- kit_name : Library preparation kit name (e.g., SQK-RPB114-24)
-- demux_table : Path to barcode/sample mapping table
-- adapter_5 : 5' adapter sequence
-- adapter_3 : 3' adapter sequence
-- min_run_length : Minimum run length for filtering reads
-- Threads : Number of CPU threads to use
-- Memory : Memory allocation (e.g., 16G, 32G)
+| Parameter | Description | Pipeline Step |
+|-----------|-------------|----------------|
+| Sample_name | Sample identifier | - |
+| pod5_path | Path to POD5 files (raw Nanopore signal data) | **1_1basecalling** |
+| appendix_path | Path to appendix directory (assign after cloning repository) | - |
+| output_path | Path to output directory | - |
+| reference_genome | Path to reference genome file (FASTA) | - |
+| basecalling_module | Basecalling software/module (e.g., dorado, guppy) | **1_1basecalling** |
+| trim_approach | Chopper trimming method (e.g., trim-by-quality, best-read-segment, split-by-low-quality; see [Chopper docs](https://github.com/wdecoster/chopper)) | **1_2Chopper** |
+| trim_cutoff | Quality or score cutoff for trimming | **1_2Chopper** |
+| QC_quality | Minimum read quality threshold | **1_2QC** |
+| min_length | Minimum read length cutoff | **1_2QC** |
+| max_length | Maximum read length cutoff | **1_2QC** |
+| kit_name | Library preparation kit name (e.g., SQK-RPB114-24) | **2_Demultiplex** |
+| demux_table | Path to barcode/sample mapping table | **2_Demultiplex** |
+| adapter_5 | 5' adapter sequence | **3_Trim** |
+| adapter_3 | 3' adapter sequence | **3_Trim** |
+| min_run_length | Minimum poly(A) length for trimming | **3_Trim** |
+| Threads | Number of CPU threads | - |
+| Memory | Memory allocation (e.g., 16G, 32G) | - |
 
 Sample_name	pod5_path	appendix_path	output_path	reference_genome	basecalling_module	trim_approach	trim_cutoff	QC_quality	min_length	max_length	kit_name	demux_table	adapter_5	adapter_3	min_run_length	Threads	Memory
 
