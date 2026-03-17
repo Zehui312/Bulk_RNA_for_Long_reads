@@ -16,8 +16,7 @@ The output BAM files can be directly used for downstream analyses.
 
 
 ## 1. Workflow
-![workflow](/img/workflow.png)
-
+<img src="/img/workflow.png" width="500">
 ## 2. Create Environment for Bulk_RNA_for_Long_reads
 
 All required software dependencies are listed in the YAML file. You can create the environment and install all tools with:
