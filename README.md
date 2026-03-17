@@ -55,8 +55,6 @@ You just need to enter your specific parameters into **meta_data.csv**, and then
 | Threads | Number of CPU threads | - |
 | Memory | Memory allocation (e.g., 16G, 32G) | - |
 
-Sample_name	pod5_path	appendix_path	output_path	reference_genome	basecalling_module	trim_approach	trim_cutoff	QC_quality	min_length	max_length	kit_name	demux_table	adapter_5	adapter_3	min_run_length	Threads	Memory
-
 
 ## 4. Fill demultiplex_table.csv
 After filling the meta_data.csv, and you can run this pipeline. 
