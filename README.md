@@ -57,9 +57,9 @@ You just need to enter your specific parameters into **meta_data.csv**, and then
 
 
 ## 4. Fill demultiplex_table.csv
-After filling the meta_data.csv, and you can run this pipeline. 
+After filling the **meta_data.csv** and **demultiplex_table.csv**, and you can run this pipeline. 
 ```bash
-sh run_scRNA_microbiome_pipeline.sh
+sh Run_Bulk_RNA_long_pipeline.sh
 ```
 
 

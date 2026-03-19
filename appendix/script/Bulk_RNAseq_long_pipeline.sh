@@ -1,9 +1,9 @@
 #!/bin/bash
 # Default values
-# sample_name="test"
+# sample_name="Serum"
 # pod5_path="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk_RNA_pipeline/pod5_test"
 # appendix_path="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk-RNA-seq-for-Nanopore-long-reads/appendix"
-# out_put_path="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk_RNA_pipeline"
+# output_dir="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/test_output"
 # reference_genome="/research/groups/ma1grp/home/zyu/work_2026/RNA_seq_3_March/Bulk-RNA-seq-for-Nanopore-long-reads/appendix/ref/sample_1.fna"
 # basecalling_module="${appendix_path}/model_files/dna_r10.4.1_e8.2_400bps_sup@v5.0.0"
 # trim_approach="best-read-segment"
@@ -96,6 +96,7 @@ echo "Adapter 3 sequence: $adapter_3"
 echo "Minimum run length: $min_run_length"
 
 echo "Threads: $threads"
+memory=$(echo ${memory} | tr -d '\r')
 echo "Memory per job: ${memory}GB"
 #=================================================================
 #+++++++++++++++++++++++Step 1 basecalling +++++++++++++++++++++++
