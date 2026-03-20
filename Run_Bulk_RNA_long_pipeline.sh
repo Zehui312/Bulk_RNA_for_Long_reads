@@ -22,10 +22,13 @@ memory=$(echo $line | cut -d ',' -f 18)
   echo "sh ./appendix/script/Bulk_RNAseq_long_pipeline.sh --sample-name $sample_name --pod5-path $pod5_path --appendix-path $appendix_path --output-dir $output_dir --reference $reference_genome --basecalling-module $basecalling_module --trim-approach $trim_approach --trim-cutoff $trim_cutoff --qc-quality $QC_quality --min-length $min_length --max-length $max_length --kit-name $kit_name --demux-table $demux_table --adapter-5 $adapter_5 --adapter-3 $adapter_3 --min-run-length $min_run_length --threads $thread_num --memory $memory" 
 done > ./appendix/script/run_pipeline.sh
 
+thread_num=$(awk -F ',' 'NR==2 {print $17}' $meta_data |head -n 1| tr -d '\r')
+memory=$(awk -F ',' 'NR==2 {print $18}' $meta_data |head -n 1| tr -d '\r')
+
 mkdir -p ./logs/    
 count=1
 while read runcode; do
-    bsub -P Bulk_RNA_${count} -J Bulk_RNA_${count} -n 2 -R "rusage[mem=8GB]" -eo ./logs/Bulk_RNA_${count}.err -oo ./logs/Bulk_RNA_${count}.out $runcode
+    bsub -P Bulk_RNA_${count} -J Bulk_RNA_${count} -n $thread_num -R "rusage[mem=${memory}GB]" -eo ./logs/Bulk_RNA_${count}.err -oo ./logs/Bulk_RNA_${count}.out $runcode
     count=$((count + 1))
 done < ./appendix/script/run_pipeline.sh
 
