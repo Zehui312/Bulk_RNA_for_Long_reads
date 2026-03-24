@@ -62,89 +62,80 @@ After filling the **meta_data.csv** and **demultiplex_table.csv**, and you can r
 sh Run_Bulk_RNA_long_pipeline.sh
 ```
 
+## ⚠️ Notes
+- Ensure metadata consistency
+- Check barcode table carefully
+- Recommended ≥3 replicates for DE analysis
+
 
 ## 📊5. Output Inteperation
 <details>
-<summary> 1_umi_extract </summary>
+<summary> 1_1_dorado </summary>
 
 ```
-├── Fresh_cell_barcode_counts.png
-├── Fresh_cell_barcode_knee.png
-├── Fresh_check_barcode.txt
-├── Fresh_correction.txt
-├── Fresh_error.txt
-├── Fresh_ext.log
-├── Fresh.R1.ext.fq.gz
-├── Fresh.R2.ext.fq.gz
-├── Fresh.wl.txt
-├── raw_stat.txt
-└── wl_Fresh.log 
+├── *.fastq (The each pod5 files were transfer into fastq file)
+├── *.err (log err file)
+├── *.out (log out file)
 ```
 </details>
 
 <details>
-<summary> 2_kraken </summary>
+<summary> 1_2_QC_stat </summary>
 
 ```
-├── kraken_output
-│   ├── Fresh_gut.report
-│   ├── Fresh_gut_umi.report
-│   └── Fresh_silva.report
-├── kraken_tables
-│   ├── CB_UMI_taxid.txt
-│   ├── CB_UMI.txt
-│   ├── Fresh_stat.txt
-│   ├── kraken_table.txt
-│   ├── species_list.txt
-│   └── taxid.txt
-├── remove_rRNA_ext.txt
-└── umi_ext_stat.txt
+├── JB251030_1_basecalling.fastq.gz (merge all *.fastq at 1_1_dorado into a zip file)
+├── JB251030_2_chopper.fastq.gz (the fastq file after chopper)
+├── JB251030_3_filtered.fastq.gz (the fastq file after QC)
+├── JB251030_NanoPlot (NanoPlot stat JB251030_3_filtered.fastq.gz file)
 ```
 
 </details>
 
 <details>
-<summary> 3_split </summary>
+<summary> 2-1_Demultiplexing </summary>
 
 ```
-├── 0_filter
-│   ├── filter_CB.txt
-│   ├── filter_kraken_output.txt
-│   ├── filter_stat.txt
-│   ├── id_list.txt
-├── 1_chunck_CB
-│   └── cb_run.sh
-├── 2_chunck_species
-│   ├── all_cblist.txt
-│   ├── caculating_count.py
-│   ├── gp_run.sh
-│   └── matrix.txt
-└── all_cblist.txt
+├── *barcode*.fastq (B251030_3_filtered.fastq.gz was demultiplex into seperated fastq files)
+├── Demux_stat.txt (Stat the length of each *barcode*.fastq file)
 ```
 
 </details>
 
 <details>
-<summary> 4_calcultate_species </summary>
+<summary> 2-2_rename </summary>
 
 ```
-── 1_calcultate
-│   ├── matrix.txt
-│   ├── species_list.txt
-│   ├── Top_species_stat.txt
-│   ├── Top_species_taxid_filtered.txt
-│   └── Top_species_taxid.txt
-└── 2_extract_reads
-    ├── R_1.stat.txt
-    ├── R_2.stat.txt
-    └── Top_species_taxid_filtered.txt
+├── *.fastq (The *barcode*.fastq files were rename based on demultiplex_table.csv)
+├── demux_stat.txt (Stat the length of each *.fastq file)
 ```
 
 </details>
 
 <details>
-<summary> 5_mapping </summary>
+<summary> 3_Trim_adapter </summary>
 
+```
+├── *.adapter_trim.fastq.gz (The fastq file after trim adapter)
+├── *.cleaned.fastq.gz (The fastq file after PolyA/T)
+├── Trim_adapter_stat.txt (Stat the length of each *.cleaned.fastq.gz)
+```
+
+</details>
+
+<details>
+<summary> 4_1_mapping_no_trim </summary>
+The file name based on input fastq and reference genome. For examle, sample3_3.ref_sample_1, sample3_3 is the input fastq file, sample_1 is the reference genome.
+```
+├── *.html (Fastp output file, open with your browser)
+├── *.sam (sam file after mapping to genome)
+├── *.alignment_stats.txt (mapping rate)
+```
+
+</details>
+
+<details>
+<summary> 4_2_mapping_trim </summary>
+The output is sample as 4_1_mapping_no_trim. The only different is the input fastq file. 4_1_mapping_no_trim input is fastq file without trim, 4_2_mapping_trim input i fastq file with trim.
 ```
 
 ```
@@ -152,28 +143,14 @@ sh Run_Bulk_RNA_long_pipeline.sh
 </details>
 
 <details>
-<summary> 6_seurat </summary>
+<summary> 5_total_stat </summary>
 
 ```
-
-```
-
-</details>
-
-<details>
-<summary> 7_total_stat </summary>
-
-```
-
-```
-
-</details>
-
-<details>
-<summary> 2_kraken </summary>
-
-```
-
+├── 1_QC_stat.txt (Check 1_1basecalling and 1_2Chopper+QC)
+├── 2_demux_stat.txt (Check 2_Demultiplex)
+├── 3_Trim_adapter_stat.txt (Check 3_Trim)
+├── 4_1_mapping_no_trim_stat.txt (Check 4_Mapping, the input fastq without trim adapter)
+├── 4_2_mapping_trim_stat.txt (Check 4_Mapping, the input fastq with trim adapter)
 ```
 
 </details>
