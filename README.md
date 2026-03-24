@@ -67,90 +67,85 @@ sh Run_Bulk_RNA_long_pipeline.sh
 - Check barcode table carefully
 - Recommended ≥3 replicates for DE analysis
 
+## 5. 📊Output Interpretation
 
-## 📊5. Output Inteperation
 <details>
-<summary> 1_1_dorado </summary>
+<summary>1_1_dorado</summary>
 
 ```
-├── *.fastq (The each pod5 files were transfer into fastq file)
-├── *.err (log err file)
-├── *.out (log out file)
+├── *.fastq (POD5 files converted to FASTQ)
+├── *.err (error log)
+├── *.out (output log)
 ```
 </details>
 
 <details>
-<summary> 1_2_QC_stat </summary>
+<summary>1_2_QC_stat</summary>
 
 ```
-├── JB251030_1_basecalling.fastq.gz (merge all *.fastq at 1_1_dorado into a zip file)
-├── JB251030_2_chopper.fastq.gz (the fastq file after chopper)
-├── JB251030_3_filtered.fastq.gz (the fastq file after QC)
-├── JB251030_NanoPlot (NanoPlot stat JB251030_3_filtered.fastq.gz file)
+├── {sample}_1_basecalling.fastq.gz (merged FASTQ from all POD5 files)
+├── {sample}_2_chopper.fastq.gz (FASTQ after Chopper filtering)
+├── {sample}_3_filtered.fastq.gz (FASTQ after QC filtering)
+├── {sample}_NanoPlot/ (quality statistics and plots)
 ```
-
 </details>
 
 <details>
-<summary> 2-1_Demultiplexing </summary>
+<summary>2_1_Demultiplexing</summary>
 
 ```
-├── *barcode*.fastq (B251030_3_filtered.fastq.gz was demultiplex into seperated fastq files)
-├── Demux_stat.txt (Stat the length of each *barcode*.fastq file)
+├── *_barcode*.fastq (demultiplexed FASTQ files by barcode)
+├── Demux_stat.txt (read count statistics)
 ```
-
 </details>
 
 <details>
-<summary> 2-2_rename </summary>
+<summary>2_2_Rename</summary>
 
 ```
-├── *.fastq (The *barcode*.fastq files were rename based on demultiplex_table.csv)
-├── demux_stat.txt (Stat the length of each *.fastq file)
+├── *.fastq (renamed FASTQ files based on demultiplex_table.csv)
+├── demux_stat.txt (read count statistics)
 ```
-
 </details>
 
 <details>
-<summary> 3_Trim_adapter </summary>
+<summary>3_Trim_adapter</summary>
 
 ```
-├── *.adapter_trim.fastq.gz (The fastq file after trim adapter)
-├── *.cleaned.fastq.gz (The fastq file after PolyA/T)
-├── Trim_adapter_stat.txt (Stat the length of each *.cleaned.fastq.gz)
+├── *.adapter_trim.fastq.gz (adapter-trimmed reads)
+├── *.cleaned.fastq.gz (poly(A/T)-trimmed reads)
+├── Trim_adapter_stat.txt (read count statistics)
 ```
-
 </details>
 
 <details>
-<summary> 4_1_mapping_no_trim </summary>
-The file name based on input fastq and reference genome. For examle, sample3_3.ref_sample_1, sample3_3 is the input fastq file, sample_1 is the reference genome.
-```
-├── *.html (Fastp output file, open with your browser)
-├── *.sam (sam file after mapping to genome)
-├── *.alignment_stats.txt (mapping rate)
-```
+<summary>4_1_mapping_no_trim</summary>
 
+```
+├── *.html (quality report)
+├── *.sam (aligned reads)
+├── *.alignment_stats.txt (mapping statistics)
+```
 </details>
 
 <details>
-<summary> 4_2_mapping_trim </summary>
-The output is sample as 4_1_mapping_no_trim. The only different is the input fastq file. 4_1_mapping_no_trim input is fastq file without trim, 4_2_mapping_trim input i fastq file with trim.
-```
+<summary>4_2_mapping_trim</summary>
 
 ```
-
+├── *.html (quality report)
+├── *.sam (aligned reads)
+├── *.alignment_stats.txt (mapping statistics)
+```
 </details>
 
 <details>
-<summary> 5_total_stat </summary>
+<summary>5_total_stat</summary>
 
 ```
-├── 1_QC_stat.txt (Check 1_1basecalling and 1_2Chopper+QC)
-├── 2_demux_stat.txt (Check 2_Demultiplex)
-├── 3_Trim_adapter_stat.txt (Check 3_Trim)
-├── 4_1_mapping_no_trim_stat.txt (Check 4_Mapping, the input fastq without trim adapter)
-├── 4_2_mapping_trim_stat.txt (Check 4_Mapping, the input fastq with trim adapter)
+├── 1_QC_stat.txt
+├── 2_demux_stat.txt
+├── 3_Trim_adapter_stat.txt
+├── 4_1_mapping_no_trim_stat.txt
+├── 4_2_mapping_trim_stat.txt
 ```
-
 </details>
