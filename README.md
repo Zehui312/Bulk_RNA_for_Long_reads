@@ -95,7 +95,7 @@ sh Run_Bulk_RNA_long_pipeline.sh
 
 ```
 ├── *_barcode*.fastq (demultiplexed FASTQ files by barcode)
-├── Demux_stat.txt (read count statistics)
+├── Demux_stat.txt (read length statistics)
 ```
 </details>
 
@@ -104,7 +104,7 @@ sh Run_Bulk_RNA_long_pipeline.sh
 
 ```
 ├── *.fastq (renamed FASTQ files based on demultiplex_table.csv)
-├── demux_stat.txt (read count statistics)
+├── demux_stat.txt (read length statistics)
 ```
 </details>
 
