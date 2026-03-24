@@ -1,4 +1,4 @@
-# Bulk_RNA_for_Long_reads
+# 🧬Bulk_RNA_for_Long_reads
 
 This pipeline is designed for processing Oxford Nanopore **bacterial sequencing** data, converting raw **POD5 files** into aligned **BAM files** for downstream analysis.
 
@@ -6,7 +6,7 @@ Raw signals are first basecalled to generate FASTQ reads, followed by quality co
 
 The output BAM files can be directly used for downstream analyses.
 
-## Table of Contents
+## 📌Table of Contents
 
 - [1. Workflow](#1-workflow)
 - [2. Create Environment for Bulk_RNA_for_Long_reads](#2-create-environment-for-bulk_rna_for_long_reads)
@@ -15,11 +15,11 @@ The output BAM files can be directly used for downstream analyses.
 - [5. Output Interpretation](#5-output-interpretation)
 
 
-## 1. Workflow
+## 1.💡Workflow
 <img src="/img/workflow.png" width="500">
 
 
-## 2. Create Environment for Bulk_RNA_for_Long_reads
+## 2. ⚙️Create Environment for Bulk_RNA_for_Long_reads
 
 All required software dependencies are listed in the YAML file. You can create the environment and install all tools with:
 ```bash
@@ -31,7 +31,7 @@ conda activate ont_env
 ```
 ---
 
-## 3. Fill meta_data.csv
+## 3. 📂Fill meta_data.csv
 You just need to enter your specific parameters into **meta_data.csv**, and then run the pipeline.
 
 | Parameter | Description | Pipeline Step |
@@ -56,14 +56,14 @@ You just need to enter your specific parameters into **meta_data.csv**, and then
 | Memory | Memory allocation (e.g., 16G, 32G) | - |
 
 
-## 4. Fill demultiplex_table.csv
+## 4. 📂Fill demultiplex_table.csv
 After filling the **meta_data.csv** and **demultiplex_table.csv**, and you can run this pipeline. 
 ```bash
 sh Run_Bulk_RNA_long_pipeline.sh
 ```
 
 
-## 5. Output Inteperation
+## 📊5. Output Inteperation
 <details>
 <summary> 1_umi_extract </summary>
 
