@@ -23,11 +23,11 @@ The output BAM files can be directly used for downstream analyses.
 
 All required software dependencies are listed in the YAML file. You can create the environment and install all tools with:
 ```bash
-mamba env create -f ont_env.yml
+mamba env create -f bulk_ont_env.yml
 ```
 After creating the environment, activate it:
 ```bash
-conda activate ont_env
+conda activate bulk_ont
 ```
 ---
 
