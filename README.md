@@ -40,22 +40,26 @@ You just need to enter your specific parameters into **meta_data.csv**, and then
 | **pod5_path** | Path to POD5 files (raw Nanopore signal data) | *1_1basecalling* |
 | **appendix_path** | Path to appendix directory (assign after cloning repository) | - |
 | **output_path** | Path to output directory | - |
-| reference_genome | Path to reference genome file (FASTA) | - |
+| **reference_genome** | Path to reference genome file (FASTA) | - |
 | basecalling_module | Basecalling software/module (e.g., dorado, guppy) | *1_1basecalling* |
 | trim_approach | Chopper trimming method (e.g., trim-by-quality, best-read-segment, split-by-low-quality; see [Chopper docs](https://github.com/wdecoster/chopper)) | *1_2Chopper* |
 | trim_cutoff | Quality or score cutoff for trimming | *1_2Chopper* |
 | QC_quality | Minimum read quality threshold | *1_2QC* |
 | min_length | Minimum read length cutoff | *1_2QC* |
-| max_length | Maximum read length cutoff | **1_2QC** |
-| kit_name | Library preparation kit name (e.g., SQK-RPB114-24) | **2_Demultiplex** |
-| demux_table | Path to barcode/sample mapping table | **2_Demultiplex** |
-| adapter_5 | 5' adapter sequence | **3_Trim** |
-| adapter_3 | 3' adapter sequence | **3_Trim** |
-| min_run_length | Minimum poly(A) length for trimming | **3_Trim** |
+| max_length | Maximum read length cutoff | *1_2QC* |
+| kit_name | Library preparation kit name (e.g., SQK-RPB114-24) | *2_Demultiplex* |
+| **demux_table** | Path to barcode/sample mapping table | *2_Demultiplex* |
+| adapter_5 | 5' adapter sequence | *3_Trim* |
+| adapter_3 | 3' adapter sequence | *3_Trim* |
+| min_run_length | Minimum poly(A) length for trimming | *3_Trim* |
 | Threads | Number of CPU threads | - |
 | Memory | Memory allocation (e.g., 16G, 32G) | - |
 ## ⚠️ Notes
-
+- **pod5_path**, **appendix_path**, **output_path**, and **reference_genome** require user-specific paths
+- Ensure **pod5_path** points to valid POD5 files
+- Verify **appendix_path** points to your cloned repository directory
+- Confirm **reference_genome** is in FASTA format and properly indexed
+- **demux_table** must match barcode names in your library kit
 
 ## 4. 📂Fill demultiplex_table.csv
 After filling the **meta_data.csv** and **demultiplex_table.csv**, and you can run this pipeline. 
