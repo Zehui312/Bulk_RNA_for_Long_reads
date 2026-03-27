@@ -37,15 +37,15 @@ You just need to enter your specific parameters into **meta_data.csv**, and then
 | Parameter | Description | Pipeline Step |
 |-----------|-------------|----------------|
 | Sample_name | Sample identifier | - |
-| pod5_path | Path to POD5 files (raw Nanopore signal data) | **1_1basecalling** |
-| appendix_path | Path to appendix directory (assign after cloning repository) | - |
-| output_path | Path to output directory | - |
+| **pod5_path** | Path to POD5 files (raw Nanopore signal data) | *1_1basecalling* |
+| **appendix_path** | Path to appendix directory (assign after cloning repository) | - |
+| **output_path** | Path to output directory | - |
 | reference_genome | Path to reference genome file (FASTA) | - |
-| basecalling_module | Basecalling software/module (e.g., dorado, guppy) | **1_1basecalling** |
-| trim_approach | Chopper trimming method (e.g., trim-by-quality, best-read-segment, split-by-low-quality; see [Chopper docs](https://github.com/wdecoster/chopper)) | **1_2Chopper** |
-| trim_cutoff | Quality or score cutoff for trimming | **1_2Chopper** |
-| QC_quality | Minimum read quality threshold | **1_2QC** |
-| min_length | Minimum read length cutoff | **1_2QC** |
+| basecalling_module | Basecalling software/module (e.g., dorado, guppy) | *1_1basecalling* |
+| trim_approach | Chopper trimming method (e.g., trim-by-quality, best-read-segment, split-by-low-quality; see [Chopper docs](https://github.com/wdecoster/chopper)) | *1_2Chopper* |
+| trim_cutoff | Quality or score cutoff for trimming | *1_2Chopper* |
+| QC_quality | Minimum read quality threshold | *1_2QC* |
+| min_length | Minimum read length cutoff | *1_2QC* |
 | max_length | Maximum read length cutoff | **1_2QC** |
 | kit_name | Library preparation kit name (e.g., SQK-RPB114-24) | **2_Demultiplex** |
 | demux_table | Path to barcode/sample mapping table | **2_Demultiplex** |
@@ -54,6 +54,7 @@ You just need to enter your specific parameters into **meta_data.csv**, and then
 | min_run_length | Minimum poly(A) length for trimming | **3_Trim** |
 | Threads | Number of CPU threads | - |
 | Memory | Memory allocation (e.g., 16G, 32G) | - |
+## ⚠️ Notes
 
 
 ## 4. 📂Fill demultiplex_table.csv
